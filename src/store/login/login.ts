@@ -4,6 +4,7 @@ import type { Account } from '@/types/login'
 import { localCache } from '@/utils/cache'
 import router from '@/router'
 import { mapMenusRoutes } from '@/utils/map-menus'
+import useMainStore from '../main/main'
 
 interface userState {
   token: string,
@@ -37,6 +38,9 @@ const useLoginStore = defineStore('login', {
       localCache.setItem('userInfo', this.userInfo)
       localCache.setItem('userMenus', this.userMenus)
 
+      const mainStore = useMainStore()
+      mainStore.fetchEntireDataAction()
+
       //动态路由
       const routes = mapMenusRoutes(this.userMenus)
       routes.forEach((route) => router.addRoute('main', route))
@@ -53,6 +57,9 @@ const useLoginStore = defineStore('login', {
         this.token = token
         this.userInfo = userInfo
         this.userMenus = userMenus
+
+        const mainStore = useMainStore()
+        mainStore.fetchEntireDataAction()
 
         // 2.动态添加路由
         const routes = mapMenusRoutes(userMenus)
